@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan</title>
+
+<style>
+:root{
+  --col-width:300px;
+  --col-gap:30px;
+}
+
+/* RESET */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#11998e,#38ef7d);
+}
+
+/* LAYOUT */
+.layout{
+  display:flex;
+  gap:14px;
+  padding:14px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:22%;
+  min-width:200px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.materi-header{
+  background:#ffffffcc;
+  border-radius:12px;
+  padding:12px;
+  font-weight:700;
+  text-align:center;
+}
+button{
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  text-align:left;
+}
+button.active{
+  outline:3px solid #fff;
+  box-shadow:0 0 0 4px rgba(255,255,255,.5);
+}
+
+/* WARNA TOMBOL */
+.pemantik{background:#2980b9;}
+.kontekstual{background:#8e44ad;}
+.tujuan{background:#16a085;}
+.aktivitas{background:#e67e22;}
+.konsep{background:#27ae60;}
+.contoh{background:#3498db;}
+.latihan{background:#d35400;}
+.refleksi{background:#c0392b;}
+.nav{background:#34495e;}
+
+/* MAIN */
+.main{
+  flex:1;
+  background:#fff;
+  border-radius:8px;
+  padding:8px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+}
+
+/* ✅ 2 KOLOM */
+.content{
+  height:600px;
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  column-count:2;
+  column-gap:var(--col-gap);
+  column-fill:auto;
+  background:#fff;
+}
+
+/* SECTION */
+.section{
+  break-inside:avoid;
+  margin-bottom:8px;
+  padding:8px;
+  border-radius:8px;
+}
+.section h3{margin:0 0 8px;}
+
+/* WARNA SECTION */
+.section.pemantik{background:#eaf3fb;}
+.section.kontekstual{background:#f3eafd;}
+.section.tujuan{background:#e9f7f1;}
+.section.aktivitas{background:#fef3e6;}
+.section.konsep{background:#eafaf1;}
+.section.contoh{background:#ebf5fb;}
+.section.latihan{background:#fdf2e9;}
+.section.refleksi{background:#fdecea;}
+
+.section p{
+  margin:6px 0;
+  font-size:20px;
+  line-height:1.2;
+}
+
+/* GAMBAR */
+.step-img{
+  width:100%;
+  border-radius:12px;
+  margin:8px 0;
+}
+
+/* WATERMARK */
+.watermark{
+  position:absolute;
+  bottom:14px;
+  right:20px;
+  font-weight:700;
+  color:rgba(0,0,0,.15);
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+  <div class="materi-header">📘 Materi 22</div>
+
+  <button class="pemantik active">💡 Pemantik</button>
+  <button class="kontekstual">🌍 Kontekstual</button>
+  <button class="tujuan">🎯 Tujuan</button>
+  <button class="aktivitas">📚 Aktivitas</button>
+  <button class="konsep">🧠 Konsep</button>
+  <button class="contoh">✍️ Contoh</button>
+  <button class="latihan">📝 Latihan</button>
+  <button class="refleksi">🔍 Refleksi</button>
+
+  <button class="nav" onclick="prevCol()">◀ Back</button>
+  <button class="nav" onclick="nextCol()"> Next ▶</button>
+</div>
+
+<div class="main">
+  <div class="watermark" id="wm">Kolom 1–2</div>
+  <div class="content" id="content"></div>
+</div>
+
+</div>
+
+<script>
+/* DATA MATERI */
+
+const materi = [
+ {idernahkah kamu mengalami kesulitan menentukan harga satuan barang dari dua transaksi belanja yang berbeda?', {id:'pemantik', title:'💡 Pemantik', color:'pemantik', text:[
+  'Bagaimana cara menggunakan perhitungan matematika agar pengeluaran keuangan menjadi lebih terkontrol?'
+ ]},
+ {id:'kontekstual', title:'🌍 Penerapan Kontekstual', color:'kontekstual', text:[
+  'Menentukan harga satuan barang dari dua transaksi belanja yang berbeda.',
+  'Menghitung biaya kombinasi barang agar sesuai dengan anggaran yang dimiliki.',
+  'Membandingkan dua paket makanan untuk mengetahui pilihan yang lebih hemat.',
+  'Menyusun perencanaan belanja harian atau mingguan secara sederhana.'
+ ]},
+ {id:'tujuan', title:'🎯 Tujuan Pembelajaran', color:'tujuan', text:[
+  'Siswa mampu menyusun dan menyelesaikan sistem persamaan linear dua variabel dari masalah keuangan sederhana serta menafsirkan solusi dalam konteks kehidupan sehari-hari.'
+ ]},
+ {id:'aktivitas', title:'📚 Aktivitas Inti', color:'aktivitas', text:[
+  'Siswa mengamati permasalahan keuangan sederhana yang disajikan dalam bentuk cerita.',
+  'Siswa berdiskusi berkelompok untuk menentukan variabel dan menyusun dua persamaan dari masalah tersebut.',
+  'Siswa menyelesaikan SPLDV dengan metode yang dipilih secara bersama-sama.',
+  'Siswa mengerjakan latihan serupa secara mandiri dan menafsirkan hasilnya dalam konteks keuangan.'
+ ]},
+ {id:'konsep', title:'🧠 Pemahaman Konsep', color:'konsep', text:[
+  'Mengapa SPLDV Relevan dalam Masalah Keuangan:',
+  'SPLDV digunakan untuk menyelesaikan masalah yang melibatkan dua variabel, seperti:',
+  'Harga dua jenis barang',
+  'Jumlah uang yang dibelanjakan',
+  'Perbandingan pengeluaran dan pendapatan',
+  'Langkah-langkah:',
+  'Identifikasi dua variabel dalam masalah keuangan.',
+  'Susun dua persamaan berdasarkan informasi yang diberikan.',
+  'Selesaikan SPLDV dengan metode yang sesuai (substitusi, eliminasi, grafik).',
+  'Tafsirkan hasilnya dalam konteks keuangan.'
+ ]},
+ {id:'contoh', title:'✍️ Contoh Soal', color:'contoh', text:[
+  'Contoh Soal 1:',
+  'Seorang ibu membeli 3 kg beras dan 2 liter minyak goreng seharga Rp76.000.',
+  'Temannya membeli 2 kg beras dan 4 liter minyak goreng seharga Rp88.000.',
+  'Tentukan harga per kg beras dan per liter minyak goreng.',
+  'Langkah:',
+  'Misal: x = harga beras per kg, y = harga minyak per liter',
+  'SPLDV:',
+  '3x + 2y = 76.000',
+  '2x + 4y = 88.000',
+  'Penyelesaian:',
+  'Kalikan persamaan pertama dengan 2:',
+  '6x + 4y = 152.000',
+  'Kurangi dengan persamaan kedua:',
+  '4x = 64.000 ⇒ x = 16.000',
+  'Substitusi: 3(16.000) + 2y = 76.000 ⇒ y = 14.000',
+  'Jawaban:',
+  'Harga beras = Rp16.000/kg, minyak = Rp14.000/liter',
+  'Contoh Soal 2:',
+  'Dua orang membeli paket makanan:',
+  '- Paket A: 2 nasi dan 1 ayam = Rp25.000',
+  '- Paket B: 1 nasi dan 2 ayam = Rp30.000',
+  'Tentukan harga nasi dan ayam.',
+  'Penyelesaian:',
+  'Misal: x = harga nasi, y = harga ayam',
+  'SPLDV:',
+  '2x + y = 25.000',
+  'x + 2y = 30.000',
+  'Jawaban: (x, y) = (10.000, 5.000)'
+ ]},
+ {id:'latihan', title:'📝 Latihan Soal', color:'latihan', text:[
+  'Seorang siswa membeli 4 buku dan 3 pensil seharga Rp43.000. Temannya membeli 2 buku dan 5 pensil seharga Rp41.000.',
+  'a. Tentukan SPLDV',
+  'b. Selesaikan',
+  'c. Tafsirkan hasilnya',
+  'Buat satu soal kontekstual keuangan sendiri (misalnya belanja, tabungan, atau pengeluaran), susun SPLDV, selesaikan, dan tafsirkan hasilnya.'
+ ]},
+ {id:'refleksi', title:'🔍 Refleksi Pembelajaran', color:'refleksi', text:[
+  'Bagaimana SPLDV membantu menyelesaikan masalah keuangan sehari-hari?',
+  'Apa tantangan dalam menyusun persamaan dari soal cerita?',
+  'Apakah kamu bisa membuat dan menyelesaikan SPLDV dari pengalaman belanja pribadi?',
+  'Siswa diminta menuliskan satu pengalaman belanja atau transaksi keuangan sederhana, menyusun SPLDV berdasarkan situasi tersebut, menyelesaikannya, dan menjelaskan makna dari solusi yang diperoleh.'
+ ]}
+];
+
+
+let iMateri=0,iStep=0;
+const container=document.getElementById('content');
+
+/* AKTIF TOMBOL */
+function setActiveButton(id){
+ document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+ document.querySelector('.'+id)?.classList.add('active');
+}
+
+/* MAJU */
+
+function showNext(){
+ if(iMateri >= materi.length) return;
+
+ const m = materi[iMateri];
+ let s = document.getElementById(m.id);
+
+ if(!s){
+  s = document.createElement('div');
+  s.className = `section ${m.color}`;
+  s.id = m.id;
+  s.innerHTML = `<h3>${m.title}</h3>`;
+  container.appendChild(s);
+  setActiveButton(m.id);
+ }
+
+ if(iStep < m.text.length){
+  const raw = m.text[iStep++];
+
+  // ✅ AMBIL SEMUA GAMBAR [[img:...]]
+  const imgs = [...raw.matchAll(/\[\[img:(.+?)\]\]/g)];
+
+  // ✅ AMBIL TEKS TANPA IMG
+  const txt = raw.replace(/\[\[img:.+?\]\]/g,'').trim();
+
+  // ✅ TAMPILKAN TEKS
+  if(txt){
+   const p = document.createElement('p');
+   p.textContent = txt;
+   s.appendChild(p);
+  }
+
+  // ✅ TAMPILKAN GAMBAR
+  imgs.forEach(match=>{
+   const img = document.createElement('img');
+   img.src = match[1];           // contoh: img/1.jpg
+   img.className = 'step-img';
+   img.loading = 'lazy';
+   img.onerror = ()=>{
+     img.alt = 'Gambar tidak ditemukan: ' + match[1];
+   };
+   s.appendChild(img);
+  });
+
+ }else{
+  iMateri++;
+  iStep = 0;
+  showNext();
+ }
+}
+
+
+/* MUNDUR */
+function showPrev(){
+ if(iMateri<0) return;
+ const m=materi[iMateri];
+ const s=document.getElementById(m.id);
+ if(s && s.children.length>1){
+  s.removeChild(s.lastElementChild);
+  iStep--;
+  setActiveButton(m.id);
+ }else if(iMateri>0){
+  iMateri--;
+  iStep=materi[iMateri].text.length;
+  showPrev();
+ }
+}
+
+/* NAV */
+function nextCol(){showNext();}
+function prevCol(){showPrev();}
+
+/* TAP = MAJU */
+document.addEventListener('pointerup',e=>{
+ if(!e.target.closest('button')) showNext();
+});
+</script>
+
+</body>
+</html>

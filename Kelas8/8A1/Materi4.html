@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan</title>
+
+<style>
+:root{
+  --col-width:300px;
+  --col-gap:30px;
+}
+
+/* RESET */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#11998e,#38ef7d);
+}
+
+/* LAYOUT */
+.layout{
+  display:flex;
+  gap:14px;
+  padding:14px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:22%;
+  min-width:200px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.materi-header{
+  background:#ffffffcc;
+  border-radius:12px;
+  padding:12px;
+  font-weight:700;
+  text-align:center;
+}
+button{
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  text-align:left;
+}
+button.active{
+  outline:3px solid #fff;
+  box-shadow:0 0 0 4px rgba(255,255,255,.5);
+}
+
+/* WARNA TOMBOL */
+.pemantik{background:#2980b9;}
+.kontekstual{background:#8e44ad;}
+.tujuan{background:#16a085;}
+.aktivitas{background:#e67e22;}
+.konsep{background:#27ae60;}
+.contoh{background:#3498db;}
+.latihan{background:#d35400;}
+.refleksi{background:#c0392b;}
+.nav{background:#34495e;}
+
+/* MAIN */
+.main{
+  flex:1;
+  background:#fff;
+  border-radius:8px;
+  padding:8px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+}
+
+/* ✅ 2 KOLOM */
+.content{
+  height:600px;
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  column-count:2;
+  column-gap:var(--col-gap);
+  column-fill:auto;
+  background:#fff;
+}
+
+/* SECTION */
+.section{
+  break-inside:avoid;
+  margin-bottom:8px;
+  padding:8px;
+  border-radius:8px;
+}
+.section h3{margin:0 0 8px;}
+
+/* WARNA SECTION */
+.section.pemantik{background:#eaf3fb;}
+.section.kontekstual{background:#f3eafd;}
+.section.tujuan{background:#e9f7f1;}
+.section.aktivitas{background:#fef3e6;}
+.section.konsep{background:#eafaf1;}
+.section.contoh{background:#ebf5fb;}
+.section.latihan{background:#fdf2e9;}
+.section.refleksi{background:#fdecea;}
+
+.section p{
+  margin:6px 0;
+  font-size:20px;
+  line-height:1.2;
+}
+
+/* GAMBAR */
+.step-img{
+  width:100%;
+  border-radius:12px;
+  margin:8px 0;
+}
+
+/* WATERMARK */
+.watermark{
+  position:absolute;
+  bottom:14px;
+  right:20px;
+  font-weight:700;
+  color:rgba(0,0,0,.15);
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+  <div class="materi-header">📘 Materi 4</div>
+
+  <button class="pemantik active">💡 Pemantik</button>
+  <button class="kontekstual">🌍 Kontekstual</button>
+  <button class="tujuan">🎯 Tujuan</button>
+  <button class="aktivitas">📚 Aktivitas</button>
+  <button class="konsep">🧠 Konsep</button>
+  <button class="contoh">✍️ Contoh</button>
+  <button class="latihan">📝 Latihan</button>
+  <button class="refleksi">🔍 Refleksi</button>
+
+  <button class="nav" onclick="prevCol()">◀ Back</button>
+  <button class="nav" onclick="nextCol()"> Next ▶</button>
+</div>
+
+<div class="main">
+  <div class="watermark" id="wm">Kolom 1–2</div>
+  <div class="content" id="content"></div>
+</div>
+
+</div>
+
+<script>
+/* DATA MATERI */
+
+const materi = [
+ {id:'pemantik', title:'💡 Pemantik', color:'pemantik', text:[
+  'Pernahkah kamu menghitung jumlah kursi di aula atau jumlah benda yang tersusun dalam barisan tertentu?',
+  'Pernahkah kamu menggunakan pola untuk mempermudah menyelesaikan masalah sehari-hari?'
+ ]},
+ {id:'kontekstual', title:'🌍 Penerapan Kontekstual', color:'kontekstual', text:[
+  'Menghitung jumlah kursi pada barisan tertentu di aula sekolah.',
+  'Menentukan total tabungan dari pola menabung yang teratur.',
+  'Menghitung jumlah tanaman atau pohon yang ditanam secara bertahap.',
+  'Menentukan jumlah jendela atau lantai pada gedung yang disusun berpola.'
+ ]},
+ {id:'tujuan', title:'🎯 Tujuan Pembelajaran', color:'tujuan', text:[
+  'Siswa mampu menyelesaikan masalah kontekstual yang berkaitan dengan pola bilangan menggunakan representasi dan strategi yang sesuai.'
+ ]},
+ {id:'aktivitas', title:'📚 Aktivitas Inti', color:'aktivitas', text:[
+  'Siswa membaca dan mengamati permasalahan kontekstual yang berkaitan dengan pola bilangan.',
+  'Siswa berdiskusi dalam kelompok untuk mengidentifikasi pola dan informasi penting dari masalah.',
+  'Siswa menyusun langkah penyelesaian masalah berdasarkan pola yang ditemukan.',
+  'Siswa mengerjakan latihan soal kontekstual secara mandiri atau berkelompok.'
+ ]},
+ {id:'konsep', title:'🧠 Pemahaman Konsep', color:'konsep', text:[
+  'Apa itu Masalah Kontekstual:',
+  'Masalah kontekstual adalah soal yang berkaitan dengan situasi nyata atau kehidupan sehari-hari. Dalam konteks pola bilangan, kita menggunakan pola untuk memecahkan masalah seperti jumlah kursi, susunan bangku, pertumbuhan tanaman, atau pengeluaran rutin.',
+  'Langkah Menyelesaikan Masalah Kontekstual:',
+  'Pahami situasi masalah.',
+  'Identifikasi pola bilangan yang muncul.',
+  'Tentukan rumus suku ke-n jika diperlukan.',
+  'Gunakan rumus atau pola untuk menjawab pertanyaan.',
+  'Periksa kembali jawaban.'
+ ]},
+ {id:'contoh', title:'✍️ Contoh Soal', color:'contoh', text:[
+  'Contoh Soal 1:',
+  'Sebuah aula memiliki barisan kursi.',
+  '- Baris pertama: 5 kursi',
+  '- Baris kedua: 8 kursi',
+  '- Baris ketiga: 11 kursi',
+  '- dan seterusnya...',
+  'Pertanyaan:',
+  'a. Tentukan banyak kursi pada baris ke-10.',
+  'b. Berapa total kursi dari baris 1 sampai baris ke-10?',
+  'Penyelesaian:',
+  'Pola: bertambah 3 → a = 5, d = 3',
+  'Rumus: Un = 5 + (n - 1) × 3 = 3n + 2',
+  'U10 = 3 × 10 + 2 = 32',
+  'Total kursi: gunakan rumus jumlah deret aritmetika:',
+  'Sn = n/2 × (a + Un) = 10/2 × (5 + 32) = 5 × 37 = 185',
+  'Contoh Soal 2:',
+  'Seorang petani menanam pohon dalam barisan.',
+  '- Baris pertama: 1 pohon',
+  '- Baris kedua: 3 pohon',
+  '- Baris ketiga: 5 pohon',
+  '- dan seterusnya...',
+  'Pertanyaan:',
+  'a. Berapa pohon yang ditanam pada baris ke-15?',
+  'b. Berapa total pohon dari baris 1 sampai 15?',
+  'Penyelesaian:',
+  'a = 1, d = 2',
+  'U15 = 1 + (15 - 1) × 2 = 29',
+  'S15 = 15/2 × (1 + 29) = 15/2 × 30 = 225'
+ ]},
+ {id:'latihan', title:'📝 Latihan Soal', color:'latihan', text:[
+  'Seorang siswa menabung setiap minggu dengan pola: Rp5.000, Rp10.000, Rp15.000, ...',
+  'a. Berapa tabungan minggu ke-12?',
+  'b. Berapa total tabungan selama 12 minggu?',
+  'Sebuah gedung memiliki jendela yang disusun bertingkat:',
+  'Lantai 1: 4 jendela',
+  'Lantai 2: 7 jendela',
+  'Lantai 3: 10 jendela',
+  'a. Tentukan jumlah jendela di lantai ke-20',
+  'b. Hitung total jendela dari lantai 1 sampai 20'
+ ]},
+ {id:'refleksi', title:'🔍 Refleksi Pembelajaran', color:'refleksi', text:[
+  'Apakah kamu menemukan pola bilangan dalam kehidupan sehari-hari?',
+  'Bagaimana pola bilangan membantumu menyelesaikan masalah nyata?',
+  'Apa strategi yang paling membantumu dalam menyelesaikan soal kontekstual?',
+  'Siswa diminta menuliskan satu contoh masalah kontekstual dari kehidupan mereka sendiri yang melibatkan pola bilangan, lalu menyelesaikannya dengan rumus yang sesuai.'
+ ]}
+];
+
+let iMateri=0,iStep=0;
+const container=document.getElementById('content');
+
+/* AKTIF TOMBOL */
+function setActiveButton(id){
+ document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+ document.querySelector('.'+id)?.classList.add('active');
+}
+
+/* MAJU */
+
+function showNext(){
+ if(iMateri >= materi.length) return;
+
+ const m = materi[iMateri];
+ let s = document.getElementById(m.id);
+
+ if(!s){
+  s = document.createElement('div');
+  s.className = `section ${m.color}`;
+  s.id = m.id;
+  s.innerHTML = `<h3>${m.title}</h3>`;
+  container.appendChild(s);
+  setActiveButton(m.id);
+ }
+
+ if(iStep < m.text.length){
+  const raw = m.text[iStep++];
+
+  // ✅ AMBIL SEMUA GAMBAR [[img:...]]
+  const imgs = [...raw.matchAll(/\[\[img:(.+?)\]\]/g)];
+
+  // ✅ AMBIL TEKS TANPA IMG
+  const txt = raw.replace(/\[\[img:.+?\]\]/g,'').trim();
+
+  // ✅ TAMPILKAN TEKS
+  if(txt){
+   const p = document.createElement('p');
+   p.textContent = txt;
+   s.appendChild(p);
+  }
+
+  // ✅ TAMPILKAN GAMBAR
+  imgs.forEach(match=>{
+   const img = document.createElement('img');
+   img.src = match[1];           // contoh: img/1.jpg
+   img.className = 'step-img';
+   img.loading = 'lazy';
+   img.onerror = ()=>{
+     img.alt = 'Gambar tidak ditemukan: ' + match[1];
+   };
+   s.appendChild(img);
+  });
+
+ }else{
+  iMateri++;
+  iStep = 0;
+  showNext();
+ }
+}
+
+
+/* MUNDUR */
+function showPrev(){
+ if(iMateri<0) return;
+ const m=materi[iMateri];
+ const s=document.getElementById(m.id);
+ if(s && s.children.length>1){
+  s.removeChild(s.lastElementChild);
+  iStep--;
+  setActiveButton(m.id);
+ }else if(iMateri>0){
+  iMateri--;
+  iStep=materi[iMateri].text.length;
+  showPrev();
+ }
+}
+
+/* NAV */
+function nextCol(){showNext();}
+function prevCol(){showPrev();}
+
+/* TAP = MAJU */
+document.addEventListener('pointerup',e=>{
+ if(!e.target.closest('button')) showNext();
+});
+</script>
+
+</body>
+</html>

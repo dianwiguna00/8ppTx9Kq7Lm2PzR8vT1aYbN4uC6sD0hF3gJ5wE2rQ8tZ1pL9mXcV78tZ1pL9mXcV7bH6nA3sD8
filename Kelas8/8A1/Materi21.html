@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan</title>
+
+<style>
+:root{
+  --col-width:300px;
+  --col-gap:30px;
+}
+
+/* RESET */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#11998e,#38ef7d);
+}
+
+/* LAYOUT */
+.layout{
+  display:flex;
+  gap:14px;
+  padding:14px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:22%;
+  min-width:200px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.materi-header{
+  background:#ffffffcc;
+  border-radius:12px;
+  padding:12px;
+  font-weight:700;
+  text-align:center;
+}
+button{
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  text-align:left;
+}
+button.active{
+  outline:3px solid #fff;
+  box-shadow:0 0 0 4px rgba(255,255,255,.5);
+}
+
+/* WARNA TOMBOL */
+.pemantik{background:#2980b9;}
+.kontekstual{background:#8e44ad;}
+.tujuan{background:#16a085;}
+.aktivitas{background:#e67e22;}
+.konsep{background:#27ae60;}
+.contoh{background:#3498db;}
+.latihan{background:#d35400;}
+.refleksi{background:#c0392b;}
+.nav{background:#34495e;}
+
+/* MAIN */
+.main{
+  flex:1;
+  background:#fff;
+  border-radius:8px;
+  padding:8px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+}
+
+/* ✅ 2 KOLOM */
+.content{
+  height:600px;
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  column-count:2;
+  column-gap:var(--col-gap);
+  column-fill:auto;
+  background:#fff;
+}
+
+/* SECTION */
+.section{
+  break-inside:avoid;
+  margin-bottom:8px;
+  padding:8px;
+  border-radius:8px;
+}
+.section h3{margin:0 0 8px;}
+
+/* WARNA SECTION */
+.section.pemantik{background:#eaf3fb;}
+.section.kontekstual{background:#f3eafd;}
+.section.tujuan{background:#e9f7f1;}
+.section.aktivitas{background:#fef3e6;}
+.section.konsep{background:#eafaf1;}
+.section.contoh{background:#ebf5fb;}
+.section.latihan{background:#fdf2e9;}
+.section.refleksi{background:#fdecea;}
+
+.section p{
+  margin:6px 0;
+  font-size:20px;
+  line-height:1.2;
+}
+
+/* GAMBAR */
+.step-img{
+  width:100%;
+  border-radius:12px;
+  margin:8px 0;
+}
+
+/* WATERMARK */
+.watermark{
+  position:absolute;
+  bottom:14px;
+  right:20px;
+  font-weight:700;
+  color:rgba(0,0,0,.15);
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+  <div class="materi-header">📘 Materi 21</div>
+
+  <button class="pemantik active">💡 Pemantik</button>
+  <button class="kontekstual">🌍 Kontekstual</button>
+  <button class="tujuan">🎯 Tujuan</button>
+  <button class="aktivitas">📚 Aktivitas</button>
+  <button class="konsep">🧠 Konsep</button>
+  <button class="contoh">✍️ Contoh</button>
+  <button class="latihan">📝 Latihan</button>
+  <button class="refleksi">🔍 Refleksi</button>
+
+  <button class="nav" onclick="prevCol()">◀ Back</button>
+  <button class="nav" onclick="nextCol()"> Next ▶</button>
+</div>
+
+<div class="main">
+  <div class="watermark" id="wm">Kolom 1–2</div>
+  <div class="content" id="content"></div>
+</div>
+
+</div>
+
+<script>
+/* DATA MATERI */
+
+const materi = [
+ {id:'pemantik', title:'💡 Pemantik', color:'pemantik', text:[
+  'Jika kamu mendapatkan hasil perhitungan berupa pasangan (x, y), apakah hasil itu selalu bermakna dalam kehidupan nyata?',
+  'Bagaimana cara memastikan jawaban matematika yang kamu peroleh masuk akal dengan situasi soal cerita?'
+ ]},
+ {id:'kontekstual', title:'🌍 Penerapan Kontekstual', color:'kontekstual', text:[
+  'Menentukan jumlah masing-masing barang dari hasil perhitungan harga.',
+  'Menafsirkan jumlah siswa laki-laki dan perempuan dari data total kelas.',
+  'Menentukan banyaknya tiket dewasa dan anak dari total penjualan.',
+  'Memahami arti kecepatan dan waktu dari hasil perhitungan perjalanan.'
+ ]},
+ {id:'tujuan', title:'🎯 Tujuan Pembelajaran', color:'tujuan', text:[
+  'Siswa mampu menafsirkan solusi dari sistem persamaan linear dua variabel dalam konteks masalah nyata dan menjelaskan makna dari nilai variabel yang diperoleh.'
+ ]},
+ {id:'aktivitas', title:'📚 Aktivitas Inti', color:'aktivitas', text:[
+  'Siswa mengamati hasil solusi SPLDV yang diperoleh dari soal cerita.',
+  'Siswa berdiskusi untuk mengaitkan nilai variabel dengan makna dalam konteks soal.',
+  'Siswa menjelaskan makna pasangan solusi secara lisan atau tertulis.',
+  'Siswa mengerjakan latihan menafsirkan solusi SPLDV dari berbagai situasi nyata.'
+ ]},
+ {id:'konsep', title:'🧠 Pemahaman Konsep', color:'konsep', text:[
+  'Apa itu Penafsiran Solusi SPLDV:',
+  'Solusi SPLDV berupa pasangan nilai (x, y) yang memenuhi kedua persamaan. Dalam konteks kehidupan nyata, solusi ini memiliki makna spesifik tergantung pada masalahnya, seperti:',
+  'Jumlah barang yang dibeli',
+  'Harga masing-masing produk',
+  'Waktu dan kecepatan',
+  'Jumlah siswa laki-laki dan perempuan',
+  'Contoh Konteks:',
+  'Jika solusi SPLDV adalah (x, y) = (3, 5) dalam konteks:',
+  'x = jumlah apel, y = jumlah jeruk',
+  '→ Maka: 3 apel dan 5 jeruk'
+ ]},
+ {id:'contoh', title:'✍️ Contoh Soal', color:'contoh', text:[
+  'Contoh Soal 1:',
+  'Seorang siswa membeli 2 pensil dan 3 buku seharga Rp21.000.',
+  'Temannya membeli 4 pensil dan 1 buku seharga Rp19.000.',
+  'Tentukan harga sebuah pensil dan sebuah buku.',
+  'Langkah:',
+  'Misal: x = harga pensil, y = harga buku',
+  'SPLDV:',
+  '2x + 3y = 21.000',
+  '4x + y = 19.000',
+  'Selesaikan → (x, y) = (3.000, 5.000)',
+  'Interpretasi:',
+  'Harga pensil = Rp3.000, harga buku = Rp5.000',
+  'Contoh Soal 2:',
+  'Jumlah siswa di kelas adalah 36 orang.',
+  'Jumlah siswa laki-laki dua kali jumlah siswa perempuan.',
+  'Tentukan jumlah siswa laki-laki dan perempuan.',
+  'Langkah:',
+  'Misal: x = siswa laki-laki, y = siswa perempuan',
+  'SPLDV:',
+  'x + y = 36',
+  'x = 2y',
+  'Selesaikan → y = 12, x = 24',
+  'Interpretasi:',
+  '24 siswa laki-laki dan 12 siswa perempuan'
+ ]},
+ {id:'latihan', title:'📝 Latihan Soal', color:'latihan', text:[
+  'Seorang ibu membeli 5 kg beras dan 2 liter minyak seharga Rp80.000.',
+  'Temannya membeli 3 kg beras dan 4 liter minyak seharga Rp76.000.',
+  'a. Tentukan SPLDV',
+  'b. Selesaikan',
+  'c. Tafsirkan hasilnya',
+  'Buat satu soal kontekstual sendiri yang melibatkan dua variabel, susun SPLDV, selesaikan, dan tafsirkan hasilnya.'
+ ]},
+ {id:'refleksi', title:'🔍 Refleksi Pembelajaran', color:'refleksi', text:[
+  'Apa arti dari solusi SPLDV dalam soal cerita yang kamu selesaikan?',
+  'Bagaimana kamu memastikan bahwa solusi yang diperoleh masuk akal dalam konteks masalah?',
+  'Apakah kamu bisa membuat dan menafsirkan SPLDV dari kehidupan sehari-hari?',
+  'Siswa diminta membuat satu soal cerita dari kehidupan mereka sendiri, menyusun SPLDV, menyelesaikannya, dan menuliskan interpretasi dari solusi yang diperoleh.'
+ ]}
+];
+
+let iMateri=0,iStep=0;
+const container=document.getElementById('content');
+
+/* AKTIF TOMBOL */
+function setActiveButton(id){
+ document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+ document.querySelector('.'+id)?.classList.add('active');
+}
+
+/* MAJU */
+
+function showNext(){
+ if(iMateri >= materi.length) return;
+
+ const m = materi[iMateri];
+ let s = document.getElementById(m.id);
+
+ if(!s){
+  s = document.createElement('div');
+  s.className = `section ${m.color}`;
+  s.id = m.id;
+  s.innerHTML = `<h3>${m.title}</h3>`;
+  container.appendChild(s);
+  setActiveButton(m.id);
+ }
+
+ if(iStep < m.text.length){
+  const raw = m.text[iStep++];
+
+  // ✅ AMBIL SEMUA GAMBAR [[img:...]]
+  const imgs = [...raw.matchAll(/\[\[img:(.+?)\]\]/g)];
+
+  // ✅ AMBIL TEKS TANPA IMG
+  const txt = raw.replace(/\[\[img:.+?\]\]/g,'').trim();
+
+  // ✅ TAMPILKAN TEKS
+  if(txt){
+   const p = document.createElement('p');
+   p.textContent = txt;
+   s.appendChild(p);
+  }
+
+  // ✅ TAMPILKAN GAMBAR
+  imgs.forEach(match=>{
+   const img = document.createElement('img');
+   img.src = match[1];           // contoh: img/1.jpg
+   img.className = 'step-img';
+   img.loading = 'lazy';
+   img.onerror = ()=>{
+     img.alt = 'Gambar tidak ditemukan: ' + match[1];
+   };
+   s.appendChild(img);
+  });
+
+ }else{
+  iMateri++;
+  iStep = 0;
+  showNext();
+ }
+}
+
+
+/* MUNDUR */
+function showPrev(){
+ if(iMateri<0) return;
+ const m=materi[iMateri];
+ const s=document.getElementById(m.id);
+ if(s && s.children.length>1){
+  s.removeChild(s.lastElementChild);
+  iStep--;
+  setActiveButton(m.id);
+ }else if(iMateri>0){
+  iMateri--;
+  iStep=materi[iMateri].text.length;
+  showPrev();
+ }
+}
+
+/* NAV */
+function nextCol(){showNext();}
+function prevCol(){showPrev();}
+
+/* TAP = MAJU */
+document.addEventListener('pointerup',e=>{
+ if(!e.target.closest('button')) showNext();
+});
+</script>
+
+</body>
+</html>

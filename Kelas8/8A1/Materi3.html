@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pertemuan</title>
+
+<style>
+:root{
+  --col-width:300px;
+  --col-gap:30px;
+}
+
+/* RESET */
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  font-family:'Segoe UI',sans-serif;
+  background:linear-gradient(135deg,#11998e,#38ef7d);
+}
+
+/* LAYOUT */
+.layout{
+  display:flex;
+  gap:14px;
+  padding:14px;
+}
+
+/* SIDEBAR */
+.sidebar{
+  width:22%;
+  min-width:200px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.materi-header{
+  background:#ffffffcc;
+  border-radius:12px;
+  padding:12px;
+  font-weight:700;
+  text-align:center;
+}
+button{
+  padding:8px;
+  border:none;
+  border-radius:10px;
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+  text-align:left;
+}
+button.active{
+  outline:3px solid #fff;
+  box-shadow:0 0 0 4px rgba(255,255,255,.5);
+}
+
+/* WARNA TOMBOL */
+.pemantik{background:#2980b9;}
+.kontekstual{background:#8e44ad;}
+.tujuan{background:#16a085;}
+.aktivitas{background:#e67e22;}
+.konsep{background:#27ae60;}
+.contoh{background:#3498db;}
+.latihan{background:#d35400;}
+.refleksi{background:#c0392b;}
+.nav{background:#34495e;}
+
+/* MAIN */
+.main{
+  flex:1;
+  background:#fff;
+  border-radius:8px;
+  padding:8px;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  justify-content:center;
+}
+
+/* ✅ 2 KOLOM */
+.content{
+  height:600px;
+  width:100%;
+  overflow-x:auto;
+  overflow-y:hidden;
+  column-count:2;
+  column-gap:var(--col-gap);
+  column-fill:auto;
+  background:#fff;
+}
+
+/* SECTION */
+.section{
+  break-inside:avoid;
+  margin-bottom:8px;
+  padding:8px;
+  border-radius:8px;
+}
+.section h3{margin:0 0 8px;}
+
+/* WARNA SECTION */
+.section.pemantik{background:#eaf3fb;}
+.section.kontekstual{background:#f3eafd;}
+.section.tujuan{background:#e9f7f1;}
+.section.aktivitas{background:#fef3e6;}
+.section.konsep{background:#eafaf1;}
+.section.contoh{background:#ebf5fb;}
+.section.latihan{background:#fdf2e9;}
+.section.refleksi{background:#fdecea;}
+
+.section p{
+  margin:6px 0;
+  font-size:20px;
+  line-height:1.2;
+}
+
+/* GAMBAR */
+.step-img{
+  width:100%;
+  border-radius:12px;
+  margin:8px 0;
+}
+
+/* WATERMARK */
+.watermark{
+  position:absolute;
+  bottom:14px;
+  right:20px;
+  font-weight:700;
+  color:rgba(0,0,0,.15);
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="sidebar">
+  <div class="materi-header">📘 Materi 3</div>
+
+  <button class="pemantik active">💡 Pemantik</button>
+  <button class="kontekstual">🌍 Kontekstual</button>
+  <button class="tujuan">🎯 Tujuan</button>
+  <button class="aktivitas">📚 Aktivitas</button>
+  <button class="konsep">🧠 Konsep</button>
+  <button class="contoh">✍️ Contoh</button>
+  <button class="latihan">📝 Latihan</button>
+  <button class="refleksi">🔍 Refleksi</button>
+
+  <button class="nav" onclick="prevCol()">◀ Back</button>
+  <button class="nav" onclick="nextCol()"> Next ▶</button>
+</div>
+
+<div class="main">
+  <div class="watermark" id="wm">Kolom 1–2</div>
+  <div class="content" id="content"></div>
+</div>
+
+</div>
+
+<script>
+/* DATA MATERI */
+
+const materi = [
+ {id:'pemantik', title:'💡 Pemantik', color:'pemantik', text:[
+  'Pernahkah kamu ingin mengetahui jumlah tertentu dalam suatu pola tanpa menuliskan semua angkanya satu per satu?',
+  'Jika kamu tahu rumus suatu pola, bagaimana cara menggunakannya untuk mencari nilai tertentu dengan cepat?'
+ ]},
+ {id:'kontekstual', title:'🌍 Penerapan Kontekstual', color:'kontekstual', text:[
+  'Menentukan jumlah tabungan pada minggu tertentu tanpa menghitung dari minggu pertama.',
+  'Mengetahui jumlah kursi pada baris tertentu di aula sekolah.',
+  'Menentukan langkah keberapa yang mencapai jumlah tertentu pada tangga bertingkat.',
+  'Menghitung jumlah benda yang disusun secara berulang pada posisi tertentu.'
+ ]},
+ {id:'tujuan', title:'🎯 Tujuan Pembelajaran', color:'tujuan', text:[
+  'Siswa mampu menentukan suku ke-n dari suatu pola bilangan menggunakan rumus aljabar yang telah dipelajari sebelumnya.'
+ ]},
+ {id:'aktivitas', title:'📚 Aktivitas Inti', color:'aktivitas', text:[
+  'Siswa mengamati beberapa contoh pola bilangan yang disajikan.',
+  'Siswa berdiskusi berkelompok untuk menentukan aturan dan rumus pola.',
+  'Siswa menggunakan rumus untuk mencari nilai pada posisi tertentu dalam pola.',
+  'Siswa mengerjakan latihan menentukan suku tertentu dari berbagai pola bilangan.'
+ ]},
+ {id:'konsep', title:'🧠 Pemahaman Konsep', color:'konsep', text:[
+  'Apa itu suku ke-n:',
+  'Suku ke-n adalah elemen ke-n dalam suatu pola bilangan. Dengan rumus aljabar, kita bisa langsung menghitung nilai suku ke-n tanpa menuliskan semua suku sebelumnya.',
+  'Rumus Umum Pola Aritmetika:',
+  'Un = a + (n - 1)d',
+  'di mana:',
+  '- Un = suku ke-n',
+  '- a = suku pertama',
+  '- d = beda antar suku',
+  '- n = nomor suku'
+ ]},
+ {id:'contoh', title:'✍️ Contoh Soal', color:'contoh', text:[
+  'Contoh Soal 1:',
+  'Pola bilangan: 4, 7, 10, 13, ...',
+  'Pertanyaan:',
+  'a. Tentukan suku ke-12.',
+  'b. Tentukan suku ke-25.',
+  'Jawaban:',
+  '- a = 4, d = 3',
+  '- Rumus: Un = 4 + (n - 1) × 3 = 3n + 1',
+  '- U12 = 3 × 12 + 1 = 37',
+  '- U25 = 3 × 25 + 1 = 76',
+  'Contoh Soal 2:',
+  'Pola bilangan: 10, 15, 20, 25, ...',
+  'Pertanyaan:',
+  'a. Tentukan suku ke-30.',
+  'b. Tentukan suku ke-50.',
+  'Jawaban:',
+  '- a = 10, d = 5',
+  '- Rumus: Un = 10 + (n - 1) × 5 = 5n + 5',
+  '- U30 = 5 × 30 + 5 = 155',
+  '- U50 = 5 × 50 + 5 = 255'
+ ]},
+ {id:'latihan', title:'📝 Latihan Soal', color:'latihan', text:[
+  'Pola bilangan: 6, 9, 12, 15, ... tentukan rumus suku ke-n.',
+  'Hitung suku ke-20 dan suku ke-100 dari pola tersebut.',
+  'Pola bilangan: 2, 5, 8, 11, ... tentukan suku ke-15 dan ke-40.',
+  'Buat pola bilangan sendiri dan tentukan suku ke-10 dan ke-50.'
+ ]},
+ {id:'refleksi', title:'🔍 Refleksi Pembelajaran', color:'refleksi', text:[
+  'Bagaimana rumus suku ke-n membantumu menyelesaikan soal dengan cepat?',
+  'Apa tantangan yang kamu hadapi saat menentukan suku ke-n?',
+  'Apakah kamu bisa menjelaskan prosesnya kepada temanmu?',
+  'Siswa menuliskan satu pola bilangan dan menghitung suku ke-25, lalu menjelaskan langkah-langkahnya secara tertulis atau lisan.'
+ ]}
+];
+
+let iMateri=0,iStep=0;
+const container=document.getElementById('content');
+
+/* AKTIF TOMBOL */
+function setActiveButton(id){
+ document.querySelectorAll('.sidebar button').forEach(b=>b.classList.remove('active'));
+ document.querySelector('.'+id)?.classList.add('active');
+}
+
+/* MAJU */
+
+function showNext(){
+ if(iMateri >= materi.length) return;
+
+ const m = materi[iMateri];
+ let s = document.getElementById(m.id);
+
+ if(!s){
+  s = document.createElement('div');
+  s.className = `section ${m.color}`;
+  s.id = m.id;
+  s.innerHTML = `<h3>${m.title}</h3>`;
+  container.appendChild(s);
+  setActiveButton(m.id);
+ }
+
+ if(iStep < m.text.length){
+  const raw = m.text[iStep++];
+
+  // ✅ AMBIL SEMUA GAMBAR [[img:...]]
+  const imgs = [...raw.matchAll(/\[\[img:(.+?)\]\]/g)];
+
+  // ✅ AMBIL TEKS TANPA IMG
+  const txt = raw.replace(/\[\[img:.+?\]\]/g,'').trim();
+
+  // ✅ TAMPILKAN TEKS
+  if(txt){
+   const p = document.createElement('p');
+   p.textContent = txt;
+   s.appendChild(p);
+  }
+
+  // ✅ TAMPILKAN GAMBAR
+  imgs.forEach(match=>{
+   const img = document.createElement('img');
+   img.src = match[1];           // contoh: img/1.jpg
+   img.className = 'step-img';
+   img.loading = 'lazy';
+   img.onerror = ()=>{
+     img.alt = 'Gambar tidak ditemukan: ' + match[1];
+   };
+   s.appendChild(img);
+  });
+
+ }else{
+  iMateri++;
+  iStep = 0;
+  showNext();
+ }
+}
+
+
+/* MUNDUR */
+function showPrev(){
+ if(iMateri<0) return;
+ const m=materi[iMateri];
+ const s=document.getElementById(m.id);
+ if(s && s.children.length>1){
+  s.removeChild(s.lastElementChild);
+  iStep--;
+  setActiveButton(m.id);
+ }else if(iMateri>0){
+  iMateri--;
+  iStep=materi[iMateri].text.length;
+  showPrev();
+ }
+}
+
+/* NAV */
+function nextCol(){showNext();}
+function prevCol(){showPrev();}
+
+/* TAP = MAJU */
+document.addEventListener('pointerup',e=>{
+ if(!e.target.closest('button')) showNext();
+});
+</script>
+
+</body>
+</html>
